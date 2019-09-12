@@ -105,23 +105,20 @@ class ImporterService implements ImporterServiceInterface
     {
         $mapper = config('api.mapper');
         $elements = collect(json_decode($this->apiService->get()))
-            ->pull($mapper['root']);
+           ->pull($mapper['root']);
 
         if ($elements) {
             foreach ($elements as $element) {
+                $data = collect();
+
+                foreach ($mapper['fields'] as $key => $value) {
+                    $data->put($key, $element->{$value});
+                }
+
+                $code = $data->pull('code');
                 $this->playerRepository->add(
-                    [
-                        'code' => $element->{$mapper['code']}
-                    ],
-                    [
-                        'first_name' => $element->{$mapper['first_name']},
-                        'second_name' => $element->{$mapper['second_name']},
-                        'total_points' => $element->{$mapper['total_points']},
-                        'influence' => $element->{$mapper['influence']},
-                        'creativity' => $element->{$mapper['creativity']},
-                        'threat' => $element->{$mapper['threat']},
-                        'ict_index' => $element->{$mapper['ict_index']},
-                    ]
+                    ['code' =>  $code],
+                    $data->toArray()
                 );
             }
         }
