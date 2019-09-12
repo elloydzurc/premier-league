@@ -10,7 +10,6 @@ namespace App\Modules\Importer\Services;
 
 use App\Modules\Importer\Services\Contracts\APIServiceInterface;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -57,13 +56,43 @@ class APIService implements APIServiceInterface
      * Get response from the API provider
      *
      * @return mixed|ResponseInterface
-     * @throws GuzzleException
      */
     public function get()
     {
-        $response = $this->client->request('GET', $this->apiUrl, $this->header);
-        $response = json_decode($response->getBody());
+        // GuzzleClient removed the trailing slash from the provided URL
+        // Which causing different return data from the API Provider
+        // Tested on Postman http://fantasy.premierleague.com/api/bootstrap-static/ return expected data
+        // Tested on Postman http://fantasy.premierleague.com/api/bootstrap-static no data returned
+        $promise = $this->client->getAsync($this->apiUrl, $this->header)->then(
+            function ($response) {
+                return $response->getBody()->getContents();
+            },
+            function ($exception) {
+                return $exception->getMessage();
+            }
+        );
+
+        $promise->wait();
+
+        // For the mean time will use file_get_contents
+        $response = file_get_contents($this->apiUrl);
+
+        if (!$this->isJson($response)) {
+            $response = json_encode(simplexml_load_string('<xml>' . $response . '</xml>'));
+        }
 
         return $response;
+    }
+
+    /**
+     * Check if string is a valid JSOn
+     *
+     * @param $string
+     * @return bool
+     */
+    private function isJson($string)
+    {
+        json_decode($string);
+        return (json_last_error() == JSON_ERROR_NONE);
     }
 }

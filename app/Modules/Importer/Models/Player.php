@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
  * @package App\Modules\Importer\Models
  *
  * @method where(string $column, $value)
+ * @method static updateOrCreate(array $key, array $data)
  */
 class Player extends Model
 {
@@ -22,6 +23,7 @@ class Player extends Model
      * @var array $fillable
      */
     protected $fillable = [
+        'code',
         'first_name',
         'second_name',
         'total_points',
@@ -29,5 +31,13 @@ class Player extends Model
         'creativity',
         'threat',
         'ict_index'
+    ];
+
+    /**
+     * @var array $casts
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 }

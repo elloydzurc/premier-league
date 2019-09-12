@@ -54,4 +54,16 @@ class PlayerRepository implements PlayerRepositoryInterface
             ->where('id', $player)
             ->first();
     }
+
+    /**
+     * Add new player
+     *
+     * @param array $key
+     * @param array $data
+     * @return mixed
+     */
+    public function add(array $key, array $data)
+    {
+        return $this->model::updateOrCreate($key, $data);
+    }
 }

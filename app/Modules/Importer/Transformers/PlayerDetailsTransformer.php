@@ -25,15 +25,14 @@ class PlayerDetailsTransformer extends TransformerAbstract
     {
         return [
             'id' => $player->getAttributeValue('id'),
+            'code' => $player->getAttributeValue('code'),
             'first_name' => $player->getAttributeValue('first_name'),
             'second_name' => $player->getAttributeValue('second_name'),
             'total_points' => $player->getAttributeValue('total_points'),
             'influence' => $player->getAttributeValue('influence'),
             'creativity' => $player->getAttributeValue('creativity'),
             'threat' => $player->getAttributeValue('threat'),
-            'ict_index' => $player->getAttributeValue('ict_index'),
-            'created_at' => $player->getAttributeValue('created_at'),
-            'updated_at' => $player->getAttributeValue('updated_at')
+            'ict_index' => $player->getAttributeValue('ict_index')
         ];
     }
 }

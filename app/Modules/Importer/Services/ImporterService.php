@@ -14,6 +14,7 @@ use App\Modules\Importer\Services\Contracts\APIServiceInterface;
 use App\Modules\Importer\Services\Contracts\ImporterServiceInterface;
 use App\Modules\Importer\Transformers\PlayerDetailsTransformer;
 use App\Modules\Importer\Transformers\PlayerTransformer;
+use Illuminate\Support\Facades\DB;
 use League\Fractal\Manager;
 use League\Fractal\Pagination\IlluminatePaginatorAdapter;
 use League\Fractal\Resource\Collection;
@@ -102,6 +103,29 @@ class ImporterService implements ImporterServiceInterface
      */
     public function populate()
     {
-        dd($this->apiService->get());
+        $mapper = config('api.mapper');
+        $elements = collect(json_decode($this->apiService->get()))
+            ->pull($mapper['root']);
+
+        if ($elements) {
+            foreach ($elements as $element) {
+                $this->playerRepository->add(
+                    [
+                        'code' => $element->{$mapper['code']}
+                    ],
+                    [
+                        'first_name' => $element->{$mapper['first_name']},
+                        'second_name' => $element->{$mapper['second_name']},
+                        'total_points' => $element->{$mapper['total_points']},
+                        'influence' => $element->{$mapper['influence']},
+                        'creativity' => $element->{$mapper['creativity']},
+                        'threat' => $element->{$mapper['threat']},
+                        'ict_index' => $element->{$mapper['ict_index']},
+                    ]
+                );
+            }
+        }
+
+        return false;
     }
 }

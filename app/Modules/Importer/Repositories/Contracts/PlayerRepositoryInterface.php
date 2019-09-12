@@ -28,4 +28,13 @@ interface PlayerRepositoryInterface
      * @return mixed
      */
     public function details(int $player);
+
+    /**
+     * Add new player
+     *
+     * @param array $key
+     * @param array $data
+     * @return mixed
+     */
+    public function add(array $key, array $data);
 }

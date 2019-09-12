@@ -10,6 +10,7 @@ namespace App\Modules\Importer\Controller;
 
 use App\Http\Controllers\Controller;
 use App\Modules\Importer\Services\Contracts\ImporterServiceInterface;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 
@@ -36,10 +37,20 @@ class ImporterController extends Controller
 
     /**
      * Show list of players with pagination
+     *
+     * @return JsonResponse
      */
     public function list()
     {
-        dd($this->importerService->getList());
+        $list = $this->importerService->getList();
+
+        $response = [
+            'message' => $list['data'] ? 'Success.' : 'No record found.',
+        ];
+
+        $response = array_merge($response, $list);
+
+        return Response::json($response, 200);
     }
 
     /**
@@ -47,7 +58,7 @@ class ImporterController extends Controller
      *
      * @param Request $request
      * @param $player
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function details(Request $request, $player)
     {

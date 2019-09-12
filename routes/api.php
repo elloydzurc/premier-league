@@ -13,11 +13,6 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::group(['namespace' => '\App\Modules\Importer\Controller', 'prefix' => 'v1/importer/'], function () {
     Route::group(['prefix' => 'player'], function () {
         Route::get('/', 'ImporterController@list')

@@ -15,6 +15,7 @@ class CreatePlayersTable extends Migration
     {
         Schema::create('players', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->mediumInteger('code', false);
             $table->string('first_name', 50);
             $table->string('second_name', 50);
             $table->smallInteger('total_points', false);
